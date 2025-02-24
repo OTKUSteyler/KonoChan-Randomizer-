@@ -37,7 +37,7 @@ let konoSend = registerCommand({
     }
 
     return {
-      content: `Here's your random image: ${imageUrl}`,
+      content: `: ${imageUrl}`,
     };
   },
   // @ts-ignore
