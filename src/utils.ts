@@ -1,6 +1,4 @@
-import fetch from "node-fetch";
-
-/**
+ /**
  * Fetches a random image from KonoChan.
  * @param isNSFW - Whether to include NSFW content.
  * @returns The URL of the fetched image or null if none are found.

@@ -9,4 +9,5 @@
         "allowJs": true
     },
     "include": ["node_modules/vendetta-types", "src"]
+    "exclude": ["dist"]
 }
