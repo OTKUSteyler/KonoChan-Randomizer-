@@ -24,10 +24,6 @@ let konoSend = registerCommand({
     const isNSFW = options.get("nsfw")?.value || false;
 
     // Check if NSFW images are allowed in the channel
-    if (isNSFW && !ctx.channel.nsfw_) {
-      sendBotMessage(ctx.channel.id, "This channel is not marked as NSFW. Use an NSFW channel instead.");
-      return;
-    }
 
     const imageUrl = await fetchImage(isNSFW);
 
