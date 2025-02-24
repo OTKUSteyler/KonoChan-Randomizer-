@@ -37,7 +37,7 @@ let konoSend = registerCommand({
     }
 
     return {
-      content: `: ${imageUrl}`,
+      content: `${imageUrl}`,
     };
   },
   // @ts-ignore
