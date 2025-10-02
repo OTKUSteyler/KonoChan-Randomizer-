@@ -1,12 +1,50 @@
-import konoSelf from "./konoSelf";
-import konoSend from "./KonoSend";
+import { registerCommand } from "@vendetta/commands";
+import { findByProps } from "@vendetta/metro";
+import { fetchImage } from "./utils";
 
-export const onLoad = () => {
-  console.log("[KonoChan Randomizer] Plugin loaded!")
-}
+const { sendBotMessage } = findByProps("sendBotMessage");
+const messageUtil = findByProps("sendMessage", "editMessage");
 
-export const onUnload = () => {
-  konoSelf();
-  konoSend();
-  console.log("[KonoChan Randomizer] Plugin unloaded!");
-}
+let konoSend = registerCommand({
+  name: "konoSend",
+  displayName: "konoSend",
+  description: "Fetch a random image from KonoChan and send it to the channel.",
+  displayDescription: "Fetch a random image from KonoChan and send it to the channel.",
+  options: [
+    {
+      name: "nsfw",
+      description: "Include NSFW content?",
+      type: 5,
+      required: false,
+      displayName: "nsfw",
+      displayDescription: "Include NSFW content?",
+    },
+  ],
+  execute: async function (args, ctx) {
+    const options = new Map(args.map((option) => [option.name, option]));
+    const isNSFW = options.get("nsfw")?.value || false;
+
+    // Check if NSFW images are allowed in the channel
+    if (isNSFW && !ctx.channel.nsfw_) {
+      sendBotMessage(ctx.channel.id, "This channel is not marked as NSFW. Use an NSFW channel instead.");
+      return;
+    }
+
+    const imageUrl = await fetchImage(isNSFW);
+
+    if (!imageUrl) {
+      sendBotMessage(ctx.channel.id, "No image found. Try again later.");
+      return;
+    }
+
+    // Slash command fix: use sendMessage with nonce instead of returning content
+    const fixNonce = Date.now().toString();
+    messageUtil.sendMessage(ctx.channel.id, { content: imageUrl }, void 0, { nonce: fixNonce });
+  },
+  // @ts-ignore
+  applicationId: "-1",
+  inputType: 1,
+  type: 1,
+});
+
+export default konoSend;
